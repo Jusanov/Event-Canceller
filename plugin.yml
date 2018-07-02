@@ -1,0 +1,6 @@
+name: EventCanceller
+main: net.jusanov.eventcanceller.EventCancellerPlugin
+version: 0.0.1
+commands:
+author: Jusanov
+website: jusanov.net
