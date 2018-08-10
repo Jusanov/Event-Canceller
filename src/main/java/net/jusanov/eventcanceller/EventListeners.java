@@ -1,5 +1,6 @@
 package net.jusanov.eventcanceller;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
@@ -25,43 +26,55 @@ public class EventListeners implements Listener {
 	@EventHandler
 	public void onInventoryOpen(InventoryOpenEvent event) {
 		
-		String configPath = "cancelInventoryOpen";
+		if (!(event.getPlayer().getGameMode() == GameMode.CREATIVE && plugin.config.getBoolean("creativeOverride")) && !(event.getPlayer().hasPermission("eventcanceller.openinventory"))) {
+			
+			String configPath = "cancelInventoryOpen";
+			
+			if (plugin.getConfig().getBoolean(configPath)) {
+				
+				event.setCancelled(true);
+				
+				errorMessageHandler(event.getPlayer(), configPath);
+				
+			}
 		
-		if (plugin.getConfig().getBoolean(configPath)) {
-			
-			event.setCancelled(true);
-			
-			errorMessageHandler(event.getPlayer(), configPath);
-			
 		}
 		
 	}
 	
 	@EventHandler
 	public void onItemCraft(CraftItemEvent event) {
+
+		if (!(event.getWhoClicked().getGameMode() == GameMode.CREATIVE && plugin.config.getBoolean("creativeOverride")) || !(event.getWhoClicked().hasPermission("eventcanceller.craftitem." + event.getCurrentItem().getType().name().toLowerCase()))) {
+			
+			String configPath = "cancelItemCraft";
+			
+			if (plugin.getConfig().getBoolean(configPath)) {
+				
+				event.setCancelled(true);
+				
+				errorMessageHandler(event.getWhoClicked(), configPath);
+				
+			}
 		
-		String configPath = "cancelItemCraft";
-		
-		if (plugin.getConfig().getBoolean(configPath)) {
-			
-			event.setCancelled(true);
-			
-			errorMessageHandler(event.getWhoClicked(), configPath);
-			
 		}
 		
 	}
 	
 	@EventHandler
 	public void onItemDrop(PlayerDropItemEvent event) {
-		
-		String configPath = "cancelItemDrop";
-		
-		if (plugin.getConfig().getBoolean(configPath)) {
+
+		if (!(event.getPlayer().getGameMode() == GameMode.CREATIVE && plugin.config.getBoolean("creativeOverride")) || !(event.getPlayer().hasPermission("eventcanceller.dropitem." + event.getItemDrop().getItemStack().getType().name().toLowerCase()))) {
 			
-			event.setCancelled(true);
+			String configPath = "cancelItemDrop";
 			
-			errorMessageHandler(event.getPlayer(), configPath);
+			if (plugin.getConfig().getBoolean(configPath)) {
+				
+				event.setCancelled(true);
+				
+				errorMessageHandler(event.getPlayer(), configPath);
+				
+			}
 			
 		}
 		
@@ -71,15 +84,19 @@ public class EventListeners implements Listener {
 	public void onItemPickup(EntityPickupItemEvent event) {
 		
 		if (event.getEntityType() == EntityType.PLAYER) {
-		
-			String configPath = "cancelItemPickup";
+
+			if (!(((HumanEntity) event.getEntity()).getGameMode() == GameMode.CREATIVE && plugin.config.getBoolean("creativeOverride")) || !(event.getEntity().hasPermission("eventcanceller.pickupitem." + event.getItem().getItemStack().getType().name().toLowerCase()))) {
+				
+				String configPath = "cancelItemPickup";
+				
+				if (plugin.getConfig().getBoolean(configPath)) {
+					
+					event.setCancelled(true);
+					
+					errorMessageHandler((HumanEntity) event.getEntity(), configPath);
+					
+				}
 			
-			if (plugin.getConfig().getBoolean(configPath)) {
-				
-				event.setCancelled(true);
-				
-				errorMessageHandler((HumanEntity) event.getEntity(), configPath);
-				
 			}
 		
 		}
@@ -88,38 +105,65 @@ public class EventListeners implements Listener {
 	
 	@EventHandler
 	public void onArrowPickup(PlayerPickupArrowEvent event) {
+
+		if (!(event.getPlayer().getGameMode() == GameMode.CREATIVE && plugin.config.getBoolean("creativeOverride"))) {
+			
+			String configPath = "cancelArrowPickup";
+			
+			if (plugin.getConfig().getBoolean(configPath)) {
+				
+				event.setCancelled(true);
+				
+				errorMessageHandler(event.getPlayer(), configPath);
+				
+			}
 		
-		String configPath = "cancelArrowPickup";
-		
-		if (plugin.getConfig().getBoolean(configPath)) {
-			
-			event.setCancelled(true);
-			
-			errorMessageHandler(event.getPlayer(), configPath);
-			
 		}
 		
 	}
 	
 	@EventHandler
 	public void onItemConsume(PlayerItemConsumeEvent event) {
-		
-		String configPath1 = "cancelItemConsume";
-		String configPath2 = "cancelPotionConsume";
-		
-		if (plugin.getConfig().getBoolean(configPath1)) {
+
+		if (!(event.getPlayer().getGameMode() == GameMode.CREATIVE && plugin.config.getBoolean("creativeOverride"))) {
 			
-			event.setCancelled(true);
+			String configPath1 = "cancelItemConsume";
+			String configPath2 = "cancelPotionConsume";
 			
-			errorMessageHandler(event.getPlayer(), configPath1);
-			
-		} else if (plugin.getConfig().getBoolean(configPath2)) {
-			
-			if (event.getItem() == new ItemStack(Material.POTION)) {
+			if (plugin.getConfig().getBoolean(configPath1) && !(event.getPlayer().hasPermission("eventcanceller.consumeitem.*")) || !(event.getPlayer().hasPermission("eventcanceller.consumeitem." + event.getItem().getType().name()))) {
 				
 				event.setCancelled(true);
 				
-				errorMessageHandler(event.getPlayer(), configPath2);
+				errorMessageHandler(event.getPlayer(), configPath1);
+				
+			} else if (plugin.getConfig().getBoolean(configPath2) && !(event.getPlayer().hasPermission("eventcanceller.consumepotion"))) {
+				
+				if (event.getItem() == new ItemStack(Material.POTION)) {
+					
+					event.setCancelled(true);
+					
+					errorMessageHandler(event.getPlayer(), configPath2);
+					
+				}
+				
+			}
+		
+		}
+		
+	}
+	
+	@EventHandler
+	public void onItemDamage(PlayerItemDamageEvent event) {
+
+		if (!(event.getPlayer().getGameMode() == GameMode.CREATIVE && plugin.config.getBoolean("creativeOverride")) && !(event.getPlayer().hasPermission("eventcanceller.itemdamage"))) {
+			
+			String configPath = "cancelItemDamage";
+			
+			if (plugin.getConfig().getBoolean(configPath)) {
+				
+				event.setCancelled(true);
+				
+				errorMessageHandler(event.getPlayer(), configPath);
 				
 			}
 			
@@ -128,30 +172,19 @@ public class EventListeners implements Listener {
 	}
 	
 	@EventHandler
-	public void onItemDamage(PlayerItemDamageEvent event) {
-		
-		String configPath = "cancelItemDamage";
-		
-		if (plugin.getConfig().getBoolean(configPath)) {
-			
-			event.setCancelled(true);
-			
-			errorMessageHandler(event.getPlayer(), configPath);
-			
-		}
-		
-	}
-	
-	@EventHandler
 	public void onBedEnter(PlayerBedEnterEvent event) {
-		
-		String configPath = "cancelBedEnter";
-		
-		if (plugin.getConfig().getBoolean(configPath)) {
+
+		if (!(event.getPlayer().getGameMode() == GameMode.CREATIVE && plugin.config.getBoolean("creativeOverride")) && !(event.getPlayer().hasPermission("eventcanceller.enterbed"))) {
 			
-			event.setCancelled(true);
+			String configPath = "cancelBedEnter";
 			
-			errorMessageHandler(event.getPlayer(), configPath);
+			if (plugin.getConfig().getBoolean(configPath)) {
+				
+				event.setCancelled(true);
+				
+				errorMessageHandler(event.getPlayer(), configPath);
+				
+			}
 			
 		}
 		

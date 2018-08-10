@@ -10,8 +10,10 @@ public class EventCancellerPlugin extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		
+		config.addDefault("creativeOverride", true);
+		
 		config.addDefault("errorMessagesEnabled", true);
-		config.addDefault("errorMessageGeneric", "You can't do that!");
+		config.addDefault("errorMessageGeneric", "§4You can't do that!");
 		
 		config.addDefault("cancelInventoryOpen", true);
 		config.addDefault("cancelInventoryOpenMessage", null);
