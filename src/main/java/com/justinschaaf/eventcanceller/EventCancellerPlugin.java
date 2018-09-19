@@ -1,4 +1,4 @@
-package net.jusanov.eventcanceller;
+package com.justinschaaf.eventcanceller;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;

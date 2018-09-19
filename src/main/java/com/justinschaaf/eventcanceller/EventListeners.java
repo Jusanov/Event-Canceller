@@ -1,4 +1,4 @@
-package net.jusanov.eventcanceller;
+package com.justinschaaf.eventcanceller;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;

@@ -11,7 +11,7 @@ Event Canceller is a plugin that gives servers options to cancel certain player 
 * Item Damage
 * Enter Bed
 
-### [Releases](https://github.com/Jusanov/EventCanceller/releases)
+### [Releases](https://github.com/justinhschaaf/EventCanceller/releases)
 
 # Config Guide
 
